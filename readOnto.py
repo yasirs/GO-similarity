@@ -2,7 +2,7 @@ import re
 import cPickle as pickle
 from GOMod import TreeNode
 
-def readOnto(FN="gene_ontology.1_2.obo"):
+def readOnto(FN="gene_ontology.1_2.obo",verbose=False):
 	colon = re.compile(':')
 	term = re.compile('\[Term\]')
 	GOre = re.compile('GO:[0-9]+')
@@ -38,26 +38,28 @@ def readOnto(FN="gene_ontology.1_2.obo"):
 							ThisNode['alts'][m.group()]=ThisNode['id']
 				else:
 					if (line.rstrip()!=''):
-						print "strange line: ",line
+						if verbose:
+							print "strange line: ",line
 				line = FI.readline()
 			if ((not obso)and(GOre.match(ThisNode['id']))):
 				Nodes.append(ThisNode)
 				Alts.update(ThisNode['alts'])
 		else:
-			print "bad line : ",line
+			if verbose:
+				print "bad line : ",line
 			line = FI.readline()
 	FI.close()
 	
-	FO = open('AltGOIds.txt','w')
-	for k in Alts.keys():
-		FO.write('%s\t%s\n' %(k,Alts[k]))
-	FO.close()
+	# FO = open('AltGOIds.txt','w')
+	# for k in Alts.keys():
+	#	FO.write('%s\t%s\n' %(k,Alts[k]))
+	# FO.close()
 	
-	FO = open('Nodes.txt','w')
-	FO.write(str(len(Nodes))+'\n')
-	for n in Nodes:
-		FO.write(n['id']+'\n'+n['namespace']+'\n'+str(len(n['parents_id']))+'\n'+'\t'.join(n['parents_id'])+'\n')
-	FO.close()
+	# FO = open('Nodes.txt','w')
+	# FO.write(str(len(Nodes))+'\n')
+	# for n in Nodes:
+	#	FO.write(n['id']+'\n'+n['namespace']+'\n'+str(len(n['parents_id']))+'\n'+'\t'.join(n['parents_id'])+'\n')
+	# FO.close()
 	
 	AllNodes = {}
 	Roots = []
@@ -70,13 +72,13 @@ def readOnto(FN="gene_ontology.1_2.obo"):
 			NotLeafs.update(n['parents_id'])
 	Leafs = set(AllNodes.keys()).difference(NotLeafs)
 	BadNodes = NotLeafs.difference(set(AllNodes.keys()))
-	
-	print "Number of Leaf Nodes = ",len(Leafs)
-	print "Bad Nodes = ", BadNodes
-	print "Roots = ", Roots
+	if verbose:
+		print "Number of Leaf Nodes = ",len(Leafs)
+		print "Bad Nodes = ", BadNodes
+		print "Roots = ", Roots
 	
 	Onto = {'Nodes':AllNodes,'Roots':Roots}
 	
-	FO = open('Onto.pkl','w')
-	pickle.dump(Onto,FO); FO.close()
+	# FO = open('Onto.pkl','w')
+	# pickle.dump(Onto,FO); FO.close()
 	return AllNodes, Roots, Alts

@@ -20,11 +20,11 @@ class TreeNode:
 		for p in self.parents_node:
 			p.AddGeneCount(g)
 
-def ReadOnto(FN):
-	FI = open(FN,'r')
-	O = pickle.load(FI)
-	FI.close()
-	return O['Nodes'],O['Roots']
+# def ReadOnto(FN):
+#	FI = open(FN,'r')
+#	O = pickle.load(FI)
+#	FI.close()
+#	return O['Nodes'],O['Roots']
 
 
 
